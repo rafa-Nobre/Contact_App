@@ -4,13 +4,11 @@ import '../models/contact_model.dart';
 
 class ContactController {
   static final ContactController _instance = ContactController.internal();
-
   factory ContactController() => _instance;
 
   ContactController.internal();
 
   Database? _database;
-
   Future<Database?> get database async {
     _database ??= await initDataBase();
     return _database;
@@ -21,13 +19,17 @@ class ContactController {
     databasesPath ??= "";
     String path = join(databasesPath, "contacts.db");
 
-    return await openDatabase(path, version: 1, onCreate: (Database db, int newerVersion) async {
-      await db.execute("CREATE TABLE ${Contact.contactTable}(${Contact.idColumn} INTEGER PRIMARY KEY, "
-          "                                 ${Contact.nameColumn} TEXT, "
-          "                                 ${Contact.emailColumn} TEXT, "
-          "                                 ${Contact.phoneColumn} TEXT, "
-          "                                 ${Contact.imgColumn} TEXT) ");
-    });
+    return await openDatabase(
+      path,
+      version: 1,
+      onCreate: (Database db, int newerVersion) async {
+        await db.execute("CREATE TABLE ${Contact.contactTable}(${Contact.idColumn} INTEGER PRIMARY KEY, "
+            "                                 ${Contact.nameColumn} TEXT, "
+            "                                 ${Contact.emailColumn} TEXT, "
+            "                                 ${Contact.phoneColumn} TEXT, "
+            "                                 ${Contact.imgColumn} TEXT) ");
+      },
+    );
   }
 
   Future<Contact> saveContact(Contact newContact) async {
@@ -55,17 +57,25 @@ class ContactController {
   Future<int> deleteContact(int id) async {
     Database? dbContact = await database;
     if (dbContact != null) {
-      return await dbContact.delete(Contact.contactTable, where: "${Contact.idColumn} = ?", whereArgs: [id]);
+      return await dbContact.delete(
+        Contact.contactTable,
+        where: "${Contact.idColumn} = ?",
+        whereArgs: [id],
+      );
     } else {
       return 0;
     }
   }
 
-  Future<int> updateContact(Contact c) async {
+  Future<int> updateContact(Contact currentContact) async {
     Database? dbContact = await database;
     if (dbContact != null) {
-      return await dbContact
-          .update(Contact.contactTable, c.toMap(), where: "${Contact.idColumn} = ?", whereArgs: [c.id]);
+      return await dbContact.update(
+        Contact.contactTable,
+        currentContact.toMap(),
+        where: "${Contact.idColumn} = ?",
+        whereArgs: [currentContact.id],
+      );
     } else {
       return 0;
     }
