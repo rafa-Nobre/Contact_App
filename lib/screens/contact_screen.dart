@@ -4,11 +4,9 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
 class ContactScreen extends StatefulWidget {
-  Contact? contact;
+  final Contact? contact;
 
-  //construtor que inicia o contato.
-  //Entre chaves porque é opcional.
-  ContactScreen({this.contact});
+  const ContactScreen({super.key, this.contact});
 
   @override
   _ContactScreenState createState() => _ContactScreenState();
@@ -28,10 +26,6 @@ class _ContactScreenState extends State<ContactScreen> {
 
   @override
   void initState() {
-    super.initState();
-
-    //acessando o contato definido no widget(ContactScreen)
-    //mostrar se ela for privada
     if (widget.contact == null) {
       _editedContact = Contact();
     } else {
@@ -41,6 +35,7 @@ class _ContactScreenState extends State<ContactScreen> {
       emailController.text = _editedContact!.email;
       phoneController.text = _editedContact!.phone;
     }
+    super.initState();
   }
 
   Future<bool> _requestPop() {
@@ -53,14 +48,13 @@ class _ContactScreenState extends State<ContactScreen> {
               content: const Text("Os dados serão perdidos."),
               actions: <Widget>[
                 TextButton(
-                    child: const Text("cancelar"),
+                    child: const Text("Cancelar"),
                     onPressed: () {
                       Navigator.pop(context);
                     }),
                 TextButton(
-                  child: const Text("sim"),
+                  child: const Text("Continuar"),
                   onPressed: () {
-                    //desempilha 2x
                     Navigator.pop(context);
                     Navigator.pop(context);
                   },
